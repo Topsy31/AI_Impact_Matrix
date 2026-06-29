@@ -30,6 +30,85 @@
   header h1 { font-size: 15px; font-weight: normal; color: #c8bfb0; letter-spacing: 0.03em; }
   header span { font-size: 12px; color: #5a7a9a; font-style: italic; }
 
+  /* ── VIEW TABS ── */
+  .view-tabs {
+    flex-shrink: 0;
+    background: #0f1923;
+    border-bottom: 1px solid #1e3040;
+    display: flex;
+    gap: 0;
+    padding: 0 16px;
+  }
+  .view-tab {
+    font-family: Georgia, serif;
+    font-size: 12px;
+    padding: 8px 18px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: #4a6a8a;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .view-tab:hover { color: #8ab0d0; }
+  .view-tab.active { color: #c8bfb0; border-bottom-color: #4a8ab0; }
+
+  /* ── GRAPH PANEL ── */
+  #graphPanel {
+    display: none;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #0a1218;
+  }
+  #graphPanel.visible { display: flex; }
+  #graphSvg { flex: 1; }
+
+  .graph-detail {
+    width: 320px;
+    flex-shrink: 0;
+    background: #0d1720;
+    border-left: 1px solid #1e3040;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .graph-detail-header {
+    padding: 16px;
+    border-bottom: 1px solid #1e3040;
+    flex-shrink: 0;
+  }
+  .graph-detail-type {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #4a7aaa; margin-bottom: 6px;
+  }
+  .graph-detail-title { font-size: 16px; color: #c8bfb0; line-height: 1.4; }
+  .graph-detail-body {
+    flex: 1; overflow-y: auto; padding: 16px;
+    scrollbar-width: thin; scrollbar-color: #2a3a4a #0d1720;
+  }
+  .graph-detail-body::-webkit-scrollbar { width: 6px; }
+  .graph-detail-body::-webkit-scrollbar-track { background: #0d1720; }
+  .graph-detail-body::-webkit-scrollbar-thumb { background: #2a3a4a; border-radius: 3px; }
+  .graph-finding { font-size: 14px; color: #a0b8a8; line-height: 1.7; font-style: italic; margin-bottom: 12px; }
+  .graph-spheres-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #5a7a9a; margin-bottom: 8px; }
+  .graph-sphere-tag {
+    display: inline-block; margin: 2px 3px 2px 0;
+    padding: 3px 9px; border-radius: 10px; font-size: 11px;
+    background: #1a2a3a; border: 1px solid #2a4a6a; color: #8ab0d0;
+  }
+  .graph-legend {
+    position: absolute; bottom: 12px; left: 12px;
+    background: rgba(10,18,24,0.85); border: 1px solid #1e3040;
+    border-radius: 4px; padding: 10px 14px; pointer-events: none;
+  }
+  .graph-legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-size: 11px; color: #8a9aaa; }
+  .graph-legend-row:last-child { margin-bottom: 0; }
+  .gl-circle { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .gl-line { width: 24px; height: 2px; flex-shrink: 0; }
+  .gl-dashed { background: repeating-linear-gradient(90deg,#5a7a9a 0,#5a7a9a 4px,transparent 4px,transparent 8px); height: 1px; }
+
   .stage {
     flex: 1;
     position: relative;
@@ -431,8 +510,14 @@
 
 <header>
   <h1>AI Impact Matrix — The Human Brain in the Age of Generative AI</h1>
-  <span>Mark Turner &nbsp;·&nbsp; Drag to rotate &nbsp;·&nbsp; Hover a sphere for key message &nbsp;·&nbsp; Click for full research</span>
+  <span id="headerHint">Mark Turner &nbsp;·&nbsp; Drag to rotate &nbsp;·&nbsp; Hover a sphere for key message &nbsp;·&nbsp; Click for full research</span>
 </header>
+
+<!-- ── VIEW TABS ── -->
+<div class="view-tabs">
+  <button class="view-tab active" id="tabMatrix" onclick="switchView('matrix')">Matrix</button>
+  <button class="view-tab" id="tabGraph" onclick="switchView('graph')">Research Graph</button>
+</div>
 
 <!-- ── QUADRANT FILTER BAR ── -->
 <div class="filter-bar" id="filterBar">
@@ -545,6 +630,27 @@
 
 </div><!-- .stage -->
 
+<!-- ── GRAPH PANEL ── -->
+<div id="graphPanel">
+  <svg id="graphSvg"></svg>
+  <div class="graph-detail" id="graphDetail">
+    <div class="graph-detail-header">
+      <div class="graph-detail-type" id="gdType">Select a node</div>
+      <div class="graph-detail-title" id="gdTitle">Click any sphere or paper in the graph to see detail here.</div>
+    </div>
+    <div class="graph-detail-body" id="gdBody"></div>
+  </div>
+  <div class="graph-legend">
+    <div class="graph-legend-row"><div class="gl-circle" style="background:#4a90d0;width:18px;height:18px"></div>Sphere — Value Added</div>
+    <div class="graph-legend-row"><div class="gl-circle" style="background:#7040c0;width:18px;height:18px"></div>Sphere — Value Reduced</div>
+    <div class="graph-legend-row"><div class="gl-circle" style="background:#4ab0c0;width:18px;height:18px"></div>Sphere — Complex</div>
+    <div class="graph-legend-row"><div class="gl-circle" style="background:#e8e0d5;width:10px;height:10px"></div>Research Paper</div>
+    <div class="graph-legend-row"><div class="gl-line" style="background:#4a7aaa;height:2px"></div>Sphere → Paper</div>
+    <div class="graph-legend-row"><div class="gl-line gl-dashed"></div>Paper cites Paper</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const NODES = [
@@ -1257,6 +1363,253 @@ function stopRotate() { autoRot=false;if(autoRotId){cancelAnimationFrame(autoRot
 window.addEventListener('resize', resize);
 updateBladeBuildUI();
 resize();
+
+// ── VIEW SWITCHING ────────────────────────────────────────────────────────────
+function switchView(v) {
+  const isMatrix = v === 'matrix';
+  document.getElementById('tabMatrix').classList.toggle('active', isMatrix);
+  document.getElementById('tabGraph').classList.toggle('active', !isMatrix);
+  document.getElementById('filterBar').style.display = isMatrix ? '' : 'none';
+  document.querySelector('.stage').style.display = isMatrix ? '' : 'none';
+  document.getElementById('headerHint').textContent = isMatrix
+    ? 'Mark Turner · Drag to rotate · Hover a sphere for key message · Click for full research'
+    : 'Mark Turner · Research network · Click any node for detail';
+  const gp = document.getElementById('graphPanel');
+  if (isMatrix) {
+    gp.classList.remove('visible');
+  } else {
+    gp.classList.add('visible');
+    initGraph();
+  }
+}
+
+// ── RESEARCH GRAPH ────────────────────────────────────────────────────────────
+let graphInitialised = false;
+
+function initGraph() {
+  if (graphInitialised) return;
+  graphInitialised = true;
+
+  // ── Build node list ──────────────────────────────────────────────────────
+  // Sphere nodes — one per unique position+label (8 positions × 2 pops = 16)
+  const sphereNodes = NODES.map(n => ({
+    id: 'sphere-' + n.id,
+    kind: 'sphere',
+    label: n.label + (n.pop === 'child' ? ' (Child)' : ' (Adult)'),
+    shortLabel: (n.pos[0] === -1 ? 'Int' : 'Emo') + ' · ' + (n.pos[1] === 1 ? 'Add' : 'Red') + ' · ' + (n.pos[2] === 1 ? 'Typ' : 'Div') + (n.pop === 'child' ? ' C' : ' A'),
+    value: n.value,
+    pop: n.pop,
+    node: n
+  }));
+
+  // Paper nodes — deduplicated by ref
+  const paperMap = {};
+  NODES.forEach(n => {
+    n.papers.forEach(p => {
+      if (!paperMap[p.ref]) paperMap[p.ref] = { id: 'paper-' + p.ref, kind: 'paper', ref: p.ref, title: p.title, findings: [], sphereIds: [] };
+      const nodeId = 'sphere-' + n.id;
+      if (!paperMap[p.ref].sphereIds.includes(nodeId)) paperMap[p.ref].sphereIds.push(nodeId);
+      paperMap[p.ref].findings.push({ sphereLabel: sphereNodes.find(s=>s.id===nodeId).shortLabel, finding: p.finding });
+    });
+  });
+  const paperNodes = Object.values(paperMap);
+
+  const nodes = [...sphereNodes, ...paperNodes];
+
+  // ── Build edge list ──────────────────────────────────────────────────────
+  const links = [];
+
+  // Sphere → paper (primary)
+  NODES.forEach(n => {
+    n.papers.forEach(p => {
+      links.push({ source: 'sphere-' + n.id, target: 'paper-' + p.ref, type: 'primary' });
+    });
+  });
+
+  // Paper → paper citations (secondary, verifiable only)
+  const citations = [
+    ['Fan et al. (2025)',        'Stadler et al. (2024)'],
+    ['Fan et al. (2025)',        'Gerlich (2025)'],
+    ['Fan et al. (2025)',        'Georgiou (2025)'],
+    ['Kulveit et al. (2025)',    'Frontiers in Psychology (2026)'],
+    ['Ronksley-Pavia et al. (2025)', 'Brandsen et al. (2024)'],
+    ['Ronksley-Pavia et al. (2025)', 'Xu et al. (2025)'],
+    ['Kosmyna et al. (2025)',    'Stadler et al. (2024)'],
+    ['Kosmyna et al. (2025)',    'Gerlich (2025)'],
+    ['Yang et al. (2026)',       'Gerlich (2025)'],
+    ['Yang et al. (2026)',       'Mark (2026)'],
+    ['Lipin (2025)',             'Bunim (2024)'],
+    ['Lipin (2025)',             'Skjuve et al. (2022)'],
+    ['Cheng et al. (2026)',      'Bunim (2024)'],
+    ['Jose et al. (2025)',       'Gerlich (2025)'],
+  ];
+  citations.forEach(([src, tgt]) => {
+    if (paperMap['paper-' + src] !== undefined || paperMap[src]) {
+      if (paperMap[src] && paperMap[tgt]) {
+        links.push({ source: 'paper-' + src, target: 'paper-' + tgt, type: 'citation' });
+      }
+    }
+  });
+  // Fix: use the paper ids directly
+  citations.forEach(([src, tgt]) => {
+    const s = paperMap[src], t = paperMap[tgt];
+    if (s && t) {
+      // already added above but with wrong ids — remove duplicates after
+    }
+  });
+  // Rebuild citation links cleanly
+  const linkSet = new Set();
+  const cleanLinks = [];
+  links.forEach(l => {
+    const key = (typeof l.source === 'string' ? l.source : l.source.id) + '|' + (typeof l.target === 'string' ? l.target : l.target.id);
+    if (!linkSet.has(key)) { linkSet.add(key); cleanLinks.push(l); }
+  });
+  // Replace citation links with corrected ids
+  citations.forEach(([src, tgt]) => {
+    const s = paperMap[src], t = paperMap[tgt];
+    if (!s || !t) return;
+    const key = s.id + '|' + t.id;
+    if (!linkSet.has(key)) { linkSet.add(key); cleanLinks.push({ source: s.id, target: t.id, type: 'citation' }); }
+  });
+
+  // ── D3 Setup ─────────────────────────────────────────────────────────────
+  const svg = d3.select('#graphSvg');
+  const panel = document.getElementById('graphPanel');
+  let W = panel.clientWidth - 320, H = panel.clientHeight;
+
+  svg.attr('width', W).attr('height', H);
+
+  const g = svg.append('g');
+
+  // Zoom
+  svg.call(d3.zoom().scaleExtent([0.2, 3]).on('zoom', e => g.attr('transform', e.transform)));
+
+  // Arrow markers
+  svg.append('defs').selectAll('marker')
+    .data(['primary','citation'])
+    .join('marker')
+    .attr('id', d => 'arrow-' + d)
+    .attr('viewBox', '0 -4 8 8').attr('refX', 18).attr('refY', 0)
+    .attr('markerWidth', 5).attr('markerHeight', 5).attr('orient', 'auto')
+    .append('path')
+    .attr('d', 'M0,-4L8,0L0,4')
+    .attr('fill', d => d === 'primary' ? '#4a7aaa' : '#5a6a7a');
+
+  // Simulation
+  const sim = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(cleanLinks).id(d => d.id).distance(d => d.type === 'primary' ? 120 : 90).strength(d => d.type === 'primary' ? 0.6 : 0.3))
+    .force('charge', d3.forceManyBody().strength(d => d.kind === 'sphere' ? -400 : -180))
+    .force('center', d3.forceCenter(W / 2, H / 2))
+    .force('collision', d3.forceCollide().radius(d => d.kind === 'sphere' ? 28 : 18));
+
+  // Links
+  const link = g.append('g').selectAll('line')
+    .data(cleanLinks).join('line')
+    .attr('stroke', d => d.type === 'primary' ? '#4a7aaa' : '#3a4a5a')
+    .attr('stroke-width', d => d.type === 'primary' ? 1.5 : 1)
+    .attr('stroke-dasharray', d => d.type === 'citation' ? '4,4' : null)
+    .attr('stroke-opacity', d => d.type === 'primary' ? 0.5 : 0.4)
+    .attr('marker-end', d => 'url(#arrow-' + d.type + ')');
+
+  // Node colours
+  const SCOL = { add: '#4a90d0', reduce: '#7040c0', complex: '#4ab0c0' };
+
+  // Node groups
+  const node = g.append('g').selectAll('g')
+    .data(nodes).join('g')
+    .attr('cursor', 'pointer')
+    .call(d3.drag()
+      .on('start', (e,d) => { if (!e.active) sim.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
+      .on('drag',  (e,d) => { d.fx=e.x; d.fy=e.y; })
+      .on('end',   (e,d) => { if (!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+    .on('click', (e,d) => { e.stopPropagation(); selectGraphNode(d); });
+
+  // Sphere circles
+  node.filter(d => d.kind === 'sphere')
+    .append('circle')
+    .attr('r', 20)
+    .attr('fill', d => SCOL[d.value])
+    .attr('fill-opacity', 0.85)
+    .attr('stroke', d => d.pop === 'child' ? '#ffd080' : '#a0d0ff')
+    .attr('stroke-width', 2);
+
+  // Paper circles
+  node.filter(d => d.kind === 'paper')
+    .append('circle')
+    .attr('r', 10)
+    .attr('fill', '#1e2e3e')
+    .attr('stroke', '#4a7aaa')
+    .attr('stroke-width', 1.2);
+
+  // Labels
+  node.filter(d => d.kind === 'sphere')
+    .append('text')
+    .attr('text-anchor', 'middle').attr('dy', '0.35em')
+    .attr('font-size', '8px').attr('fill', '#ffffff').attr('pointer-events', 'none')
+    .text(d => d.shortLabel);
+
+  node.filter(d => d.kind === 'paper')
+    .append('text')
+    .attr('x', 13).attr('dy', '0.35em')
+    .attr('font-size', '9px').attr('fill', '#8ab0c8').attr('pointer-events', 'none')
+    .text(d => d.ref);
+
+  // Tick
+  sim.on('tick', () => {
+    link.attr('x1', d=>d.source.x).attr('y1', d=>d.source.y)
+        .attr('x2', d=>d.target.x).attr('y2', d=>d.target.y);
+    node.attr('transform', d => `translate(${d.x},${d.y})`);
+  });
+
+  // Resize
+  window.addEventListener('resize', () => {
+    W = panel.clientWidth - 320; H = panel.clientHeight;
+    svg.attr('width', W).attr('height', H);
+    sim.force('center', d3.forceCenter(W/2, H/2)).alpha(0.3).restart();
+  });
+
+  // Click background to deselect
+  svg.on('click', () => clearGraphDetail());
+}
+
+function selectGraphNode(d) {
+  const gdType  = document.getElementById('gdType');
+  const gdTitle = document.getElementById('gdTitle');
+  const gdBody  = document.getElementById('gdBody');
+
+  if (d.kind === 'sphere') {
+    gdType.textContent  = (d.pop === 'child' ? 'Child sphere' : 'Adult sphere') + ' — ' + d.node.badge;
+    gdTitle.textContent = d.node.label;
+    const insightClass = d.node.insightType === 'warning' ? ' warning' : d.node.insightType === 'complex' ? ' complex' : '';
+    let html = `<div class="insight-box${insightClass}" style="margin-top:0;margin-bottom:16px"><div class="insight-text">${d.node.insight}</div></div>`;
+    html += `<div class="graph-spheres-label">Research papers (${d.node.papers.length})</div>`;
+    d.node.papers.forEach(p => {
+      html += `<details class="paper" style="margin-bottom:6px">
+        <summary><span class="paper-ref">${p.ref}</span><span class="paper-title" style="margin-left:6px">${p.title}</span></summary>
+        <div class="paper-finding">${p.finding}</div>
+      </details>`;
+    });
+    gdBody.innerHTML = html;
+  } else {
+    gdType.textContent  = 'Research Paper';
+    gdTitle.textContent = d.ref;
+    let html = `<div style="font-size:13px;color:#8a9aaa;font-style:italic;line-height:1.5;margin-bottom:16px">${d.title}</div>`;
+    html += `<div class="graph-spheres-label">Appears in ${d.sphereIds.length} sphere${d.sphereIds.length===1?'':'s'}</div>`;
+    d.findings.forEach(f => {
+      html += `<div style="margin-bottom:12px">
+        <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#4a7aaa;margin-bottom:4px">${f.sphereLabel}</div>
+        <div class="graph-finding">${f.finding}</div>
+      </div>`;
+    });
+    gdBody.innerHTML = html;
+  }
+}
+
+function clearGraphDetail() {
+  document.getElementById('gdType').textContent  = 'Select a node';
+  document.getElementById('gdTitle').textContent = 'Click any sphere or paper in the graph to see detail here.';
+  document.getElementById('gdBody').innerHTML = '';
+}
 
 </script>
 
