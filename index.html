@@ -176,6 +176,176 @@
   }
   .blade-left-tab:hover { background: #243f55; color: #a0d0f0; }
 
+  /* ── BOTTOM NARRATIVE BLADE ── */
+  .blade-bottom {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 320px;
+    background: #0e1a26;
+    border-top: 1px solid #2a4a6a;
+    z-index: 25;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(0);
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
+  }
+  .blade-bottom.hidden { transform: translateY(100%); }
+
+  .blade-bottom-tab {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a2f42;
+    border: 1px solid #2a4a6a;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    color: #6ab0d0;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    cursor: pointer;
+    white-space: nowrap;
+    z-index: 24;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+  }
+  .blade-bottom-tab:hover { background: #243f55; color: #a0d0f0; }
+
+  .narr-tabs {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid #1e3040;
+    flex-shrink: 0;
+    background: #0a1520;
+    padding: 0 12px;
+    gap: 0;
+  }
+  .narr-tab {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    padding: 9px 14px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: #4a6a8a;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .narr-tab:hover { color: #8ab0d0; }
+  .narr-tab.active { color: #c8d8e8; border-bottom-color: #4a8ab0; }
+
+  .narr-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #4a6a8a;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 8px;
+    line-height: 1;
+    align-self: center;
+    transition: color 0.15s;
+  }
+  .narr-close:hover { color: #c8bfb0; }
+
+  .narr-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    gap: 0;
+    scrollbar-width: thin;
+    scrollbar-color: #2a3a4a #0e1a26;
+  }
+  .narr-content::-webkit-scrollbar { width: 5px; }
+  .narr-content::-webkit-scrollbar-track { background: #0e1a26; }
+  .narr-content::-webkit-scrollbar-thumb { background: #2a3a4a; border-radius: 3px; }
+
+  .narr-panel {
+    display: none;
+    width: 100%;
+    padding: 18px 24px;
+    gap: 24px;
+    flex-shrink: 0;
+  }
+  .narr-panel.active { display: flex; }
+
+  .narr-script {
+    flex: 1;
+    font-size: 14px;
+    color: #a8b8c8;
+    line-height: 1.8;
+  }
+  .narr-script em { color: #c8d8a8; font-style: italic; }
+  .narr-script strong { color: #e8e0d5; font-style: normal; }
+  .narr-script .narr-quote {
+    display: block;
+    border-left: 3px solid #2a5a8a;
+    padding: 10px 16px;
+    margin: 12px 0;
+    color: #c8d8e8;
+    font-size: 15px;
+    font-style: italic;
+    background: #0a1520;
+    border-radius: 0 4px 4px 0;
+    line-height: 1.7;
+  }
+  .narr-script .narr-stage {
+    display: block;
+    font-size: 11px;
+    color: #3a6a5a;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 14px 0 4px;
+    font-style: normal;
+  }
+
+  .narr-action {
+    width: 200px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 4px;
+  }
+  .narr-action-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #3a5a7a;
+    margin-bottom: 2px;
+  }
+  .narr-btn {
+    font-family: Georgia, serif;
+    font-size: 12px;
+    padding: 8px 12px;
+    background: #111e2a;
+    border: 1px solid #2a4a6a;
+    border-radius: 4px;
+    color: #6ab0d0;
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.4;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .narr-btn:hover { background: #1a2e40; color: #a0d0f0; border-color: #4a7aaa; }
+  .narr-btn.primary { border-color: #4a8ab0; color: #8ad0f0; }
+  .narr-progress {
+    margin-top: 8px;
+    display: flex;
+    gap: 4px;
+  }
+  .narr-pip {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #1e3040; border: 1px solid #2a4a6a;
+    transition: background 0.2s;
+  }
+  .narr-pip.done { background: #3a7aaa; }
+
   .blade-right {
     right: 0;
     border-left: 1px solid #2a3a4a;
@@ -614,6 +784,125 @@
     <div class="tooltip-body" id="ttBody"></div>
     <div class="tooltip-hint">Click for full research →</div>
   </div>
+
+  <!-- ── BOTTOM NARRATIVE BLADE ── -->
+  <!-- ── BOTTOM BLADE OPEN TAB ── -->
+  <div class="blade-bottom-tab" id="bladeBottomTab" onclick="toggleNarrative()">The Invisible Trade — Presenter Script</div>
+
+  <div class="blade-bottom hidden" id="bladeBottom">
+    <div class="narr-tabs">
+      <button class="narr-tab active" onclick="setNarrTab(0)">1 · The Story</button>
+      <button class="narr-tab" onclick="setNarrTab(1)">2 · The Frame</button>
+      <button class="narr-tab" onclick="setNarrTab(2)">3 · Sphere 1</button>
+      <button class="narr-tab" onclick="setNarrTab(3)">4 · Spheres 2 &amp; 3</button>
+      <button class="narr-tab" onclick="setNarrTab(4)">5 · The Evidence</button>
+      <button class="narr-close" onclick="toggleNarrative()" title="Close">✕</button>
+    </div>
+
+    <div class="narr-content">
+
+      <!-- ── PANEL 0: The Story ── -->
+      <div class="narr-panel active" id="narrPanel0">
+        <div class="narr-script">
+          <span class="narr-stage">Open with the matrix blank. No spheres visible.</span>
+          <span class="narr-quote">"Picture someone you know — probably yourself — sitting with a difficult document to write. A proposal, a strategy paper, a performance review. You have been staring at it for twenty minutes and it isn't moving. So you open ChatGPT, describe the situation, and it gives you a first draft in thirty seconds. You edit it, improve it, send it. The work is done. The output is good. Everyone is happy."</span>
+          Pause. Let it sit.
+          <span class="narr-quote">"That story feels completely fine. <strong>That's the problem.</strong>"</span>
+          Reveal the matrix blank. The central question to plant now and return to at the end:
+          <span class="narr-quote"><em>"What are you paying for what AI gives you?"</em></span>
+        </div>
+        <div class="narr-action">
+          <div class="narr-action-label">Matrix state</div>
+          <button class="narr-btn primary" onclick="narrativeClear()">Reset to blank canvas</button>
+          <div class="narr-progress" id="pip0"></div>
+        </div>
+      </div>
+
+      <!-- ── PANEL 1: The Frame ── -->
+      <div class="narr-panel" id="narrPanel1">
+        <div class="narr-script">
+          <span class="narr-stage">Build each axis as you speak. Click the buttons in sequence.</span>
+          <span class="narr-quote">"The first question the matrix asks is not 'did AI help you?' It asks: <em>did you retain anything?</em> Not the output — the output is obvious. Did the human who used the tool come away more capable, or less?"</span>
+          <span class="narr-stage">→ Reveal Value axis. Pause.</span>
+          <span class="narr-quote">"The second question is about what kind of human activity was involved. Intellectual engagement — reasoning, evaluating, constructing an argument — or emotional — connection, identity, the sense of being understood. These are not equivalent. AI interacts with them differently."</span>
+          <span class="narr-stage">→ Reveal Engagement axis.</span>
+          <span class="narr-quote">"The third question is whose brain we're talking about. And — this is the part the mainstream AI debate almost entirely ignores — a neurotypical brain, or a neurodivergent one. For people with ADHD, autism, or dyslexia, AI can be a genuine equaliser. Not a workaround — a structural equaliser. Neurodiverse workers report significantly higher satisfaction with AI tools than neurotypical respondents. That matters. But the same axis cuts the other way. One study found the phrase 'I have autism' scored more negatively in AI language model associations than 'I am a bank robber.' That tension is real, unresolved, and worth naming."</span>
+          <span class="narr-stage">→ Reveal Neurology axis. Then reveal adults, then children.</span>
+          <span class="narr-quote">"We now have eight zones. Eight different answers to the question of what AI is doing to human capability. Let's find where you are."</span>
+        </div>
+        <div class="narr-action">
+          <div class="narr-action-label">Build the matrix</div>
+          <button class="narr-btn" onclick="narrativeBuild(1)">Value axis</button>
+          <button class="narr-btn" onclick="narrativeBuild(2)">+ Engagement axis</button>
+          <button class="narr-btn" onclick="narrativeBuild(3)">+ Neurology axis</button>
+          <button class="narr-btn" onclick="narrativeBuild(4)">+ Adult spheres</button>
+          <button class="narr-btn" onclick="narrativeBuild(5)">+ Child spheres</button>
+          <div class="narr-progress" id="pip1"></div>
+        </div>
+      </div>
+
+      <!-- ── PANEL 2: Sphere 1 ── -->
+      <div class="narr-panel" id="narrPanel2">
+        <div class="narr-script">
+          <span class="narr-stage">Click the sphere to open its detail blade. Read the headline to the room.</span>
+          <span class="narr-quote">"This is the aspirational cell. This is where you believe you are when you open ChatGPT. Hint-seeking. Augmenting your thinking, not replacing it. Twenty-seven percent of users in one study stayed here. They showed no meaningful cognitive degradation."</span>
+          Pause. Then:
+          <span class="narr-quote">"The question is — are you one of them? <em>And how would you know?</em>"</span>
+          Plant the seed. Do not answer it. Move on.
+        </div>
+        <div class="narr-action">
+          <div class="narr-action-label">Intellectual · Added · Typical</div>
+          <button class="narr-btn primary" onclick="narrativeSelect(0)">Open Adult sphere</button>
+          <button class="narr-btn" onclick="narrativeSelect(1)">Open Child sphere</button>
+          <button class="narr-btn" onclick="closeRight();selectedNode=null;draw()">Close detail</button>
+          <div class="narr-progress" id="pip2"></div>
+        </div>
+      </div>
+
+      <!-- ── PANEL 3: Spheres 2 & 3 ── -->
+      <div class="narr-panel" id="narrPanel3">
+        <div class="narr-script">
+          <span class="narr-stage">Sphere 2 — Intellectual · Value Reduced · Typical (Adult)</span>
+          <span class="narr-quote">"This is the most dangerous cell in the matrix. Not because the harm is severe — but because it is invisible. The professional in this cell produces output that still looks good. Their colleagues cannot see the problem. Their manager cannot see it. <em>They</em> cannot see it. The skill is eroding quietly, and the only moment the loss becomes visible is when the AI is taken away."</span>
+          Gloria Mark — tell as a story, not a citation:
+          <span class="narr-quote">"Gloria Mark has been studying human attention since 2003. Average focus time on a single task: two and a half minutes in 2003. Forty-seven seconds by 2020. She said cognitive abilities atrophy through disuse — exactly like a muscle. She was talking about smartphones. Imagine the same mechanism, but faster, more targeted, and designed to feel helpful."</span>
+          <span class="narr-stage">→ Sphere 3 — Intellectual · Value Reduced · Typical (Child)</span>
+          <span class="narr-quote">"Now consider a child. Not a professional who is losing a skill they once had. A child who is never forming it in the first place. A cohort study tracked five hundred children from infancy. Children with the highest screen exposure at age one showed the largest academic effects years later. The mechanism: every hour with a screen was an hour not spent in effortful, reciprocal interaction with a caregiver. That interaction is how cognitive architecture gets built."</span>
+          The sharpest line. Deliver it slowly.
+          <span class="narr-quote">"An adult who stops practising loses a skill they once had. A child who never practises never builds it. <strong>Those are not the same problem.</strong> Non-formation may be permanent in ways that adult atrophy is not."</span>
+          Let the silence hold.
+        </div>
+        <div class="narr-action">
+          <div class="narr-action-label">Intellectual · Reduced · Typical</div>
+          <button class="narr-btn primary" onclick="narrativeSelect(2)">Open Adult sphere</button>
+          <button class="narr-btn" onclick="narrativeSelect(3)">Open Child sphere</button>
+          <button class="narr-btn" onclick="closeRight();selectedNode=null;draw()">Close detail</button>
+          <div class="narr-progress" id="pip3"></div>
+        </div>
+      </div>
+
+      <!-- ── PANEL 4: The Evidence ── -->
+      <div class="narr-panel" id="narrPanel4">
+        <div class="narr-script">
+          <span class="narr-stage">Switch to Research Graph view. Let the audience absorb it before speaking.</span>
+          <span class="narr-quote">"Everything I've described is grounded in peer-reviewed research. This is the network of papers underpinning the matrix — each sphere connected to the studies that support it, and those studies connected to each other through citation. The papers at the centre of that network are the ones that bear the most evidential weight."</span>
+          <span class="narr-quote">"The matrix doesn't tell you what to do. It shows you the territory. The question I want to leave you with is the one I opened with — <em>what are you paying for what AI gives you?</em> Not in money. In capability. In the neural pathways that would have fired if you had struggled with it yourself."</span>
+          <span class="narr-quote">"I'm not arguing you should stop using AI. I use it every day. I wrote a book teaching people how. What I'm arguing is that we are making this trade constantly, automatically, without awareness — and we are making it for our children before they can consent to it."</span>
+          Close with the invitation.
+          <span class="narr-quote">"The matrix doesn't give you an answer. Tonight I'd like to hear where you think you are in it — and whether you've ever asked yourself that question before."</span>
+        </div>
+        <div class="narr-action">
+          <div class="narr-action-label">Switch view</div>
+          <button class="narr-btn primary" onclick="switchView('graph')">Show Research Graph</button>
+          <button class="narr-btn" onclick="switchView('matrix')">Return to Matrix</button>
+          <div class="narr-action-label" style="margin-top:8px">Complete run</div>
+          <button class="narr-btn" onclick="narrativeClear()">Reset to blank</button>
+          <div class="narr-progress" id="pip4"></div>
+        </div>
+      </div>
+
+    </div><!-- .narr-content -->
+  </div><!-- .blade-bottom -->
 
   <!-- ── RIGHT DETAIL BLADE ── -->
   <div class="blade blade-right hidden" id="bladeRight">
@@ -1374,6 +1663,9 @@ function switchView(v) {
   document.getElementById('headerHint').textContent = isMatrix
     ? 'Mark Turner · Drag to rotate · Hover a sphere for key message · Click for full research'
     : 'Mark Turner · Research network · Click any node for detail';
+  // hide narrative tab on graph view
+  const bbt = document.getElementById('bladeBottomTab');
+  if (bbt) bbt.style.display = (!isMatrix || narrOpen) ? 'none' : '';
   const gp = document.getElementById('graphPanel');
   if (isMatrix) {
     gp.classList.remove('visible');
@@ -1610,6 +1902,68 @@ function clearGraphDetail() {
   document.getElementById('gdTitle').textContent = 'Click any sphere or paper in the graph to see detail here.';
   document.getElementById('gdBody').innerHTML = '';
 }
+
+// ── BOTTOM NARRATIVE BLADE ────────────────────────────────────────────────────
+let narrOpen = false;
+let narrTab  = 0;
+
+function toggleNarrative() {
+  narrOpen = !narrOpen;
+  document.getElementById('bladeBottom').classList.toggle('hidden', !narrOpen);
+  document.getElementById('bladeBottomTab').style.display = narrOpen ? 'none' : '';
+}
+
+function setNarrTab(i) {
+  narrTab = i;
+  document.querySelectorAll('.narr-tab').forEach((b,j) => b.classList.toggle('active', j===i));
+  document.querySelectorAll('.narr-panel').forEach((p,j) => p.classList.toggle('active', j===i));
+  updateNarrPips();
+}
+
+function updateNarrPips() {
+  for (let i = 0; i < 5; i++) {
+    const el = document.getElementById('pip' + i);
+    if (!el) continue;
+    el.innerHTML = '';
+    for (let j = 0; j < 5; j++) {
+      const pip = document.createElement('div');
+      pip.className = 'narr-pip' + (j <= narrTab ? ' done' : '');
+      el.appendChild(pip);
+    }
+  }
+}
+
+function narrativeClear() {
+  clearMatrix();
+  closeRight();
+  if (document.querySelector('.stage').style.display === 'none') switchView('matrix');
+}
+
+function narrativeBuild(step) {
+  if (document.querySelector('.stage').style.display === 'none') switchView('matrix');
+  if (step <= buildState) return;
+  buildStep(step);
+}
+
+function narrativeSelect(nodeId) {
+  if (document.querySelector('.stage').style.display === 'none') switchView('matrix');
+  // Ensure build is complete enough to show this node
+  const node = NODES.find(n => n.id === nodeId);
+  if (!node) return;
+  const neededState = node.pop === 'child' ? 5 : 4;
+  if (buildState < neededState) {
+    // Animate straight to needed state
+    animFrom = buildState; animTo = neededState; buildState = neededState;
+    animStart = performance.now();
+    updateBladeBuildUI();
+    requestAnimationFrame(animateBuild);
+  }
+  // Slight delay so spheres are visible before blade opens
+  setTimeout(() => openDetail(nodeId), buildState < neededState ? 450 : 0);
+}
+
+// Initialise pips
+updateNarrPips();
 
 </script>
 
