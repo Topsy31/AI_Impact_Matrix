@@ -239,10 +239,10 @@
 
   .value-badge {
     display: inline-block;
-    margin-top: 6px;
-    padding: 3px 10px;
+    margin-top: 8px;
+    padding: 5px 14px;
     border-radius: 12px;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: bold;
     letter-spacing: 0.05em;
   }
@@ -251,18 +251,18 @@
   .badge-complex { background: #2a2a1a; color: #aaaa4a; border: 1px solid #5a5a2a; }
 
   .section-label {
-    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #5a7a9a; margin-top: 16px; margin-bottom: 6px;
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #5a7a9a; margin-top: 20px; margin-bottom: 8px;
   }
-  .who-text { font-size: 13px; color: #c8bfb0; line-height: 1.6; }
+  .who-text { font-size: 15px; color: #c8bfb0; line-height: 1.7; }
 
   .insight-box {
-    background: #1a2010; border-left: 3px solid #4a7a2a;
-    padding: 10px 12px; margin-top: 6px; border-radius: 0 4px 4px 0;
+    background: #1a2010; border-left: 4px solid #4a7a2a;
+    padding: 14px 16px; margin-top: 8px; border-radius: 0 4px 4px 0;
   }
   .insight-box.warning { background: #201010; border-left-color: #7a2a2a; }
   .insight-box.complex { background: #201a10; border-left-color: #7a6a2a; }
-  .insight-text { font-size: 12px; color: #a0b890; line-height: 1.6; font-style: italic; }
+  .insight-text { font-size: 17px; color: #a0b890; line-height: 1.7; font-style: italic; }
   .insight-box.warning .insight-text { color: #b88080; }
   .insight-box.complex .insight-text { color: #b8a870; }
 
@@ -270,8 +270,8 @@
     background: #1a100a; border-left: 3px solid #aa5a1a;
     padding: 10px 12px; margin-top: 10px; border-radius: 0 4px 4px 0;
   }
-  .nonformation-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #e0a050; margin-bottom: 4px; }
-  .nonformation-text { font-size: 12px; color: #c8a080; line-height: 1.6; font-style: italic; }
+  .nonformation-label { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #e0a050; margin-bottom: 6px; }
+  .nonformation-text { font-size: 14px; color: #c8a080; line-height: 1.7; font-style: italic; }
 
   .gap-tag {
     display: inline-block; background: #2a1a3a; color: #9a6acc;
@@ -279,13 +279,41 @@
     padding: 2px 8px; margin-top: 8px; letter-spacing: 0.04em;
   }
 
-  .paper {
-    background: #1a2a3a; border: 1px solid #2a3a4a; border-radius: 4px;
-    padding: 10px 12px; margin-bottom: 8px;
+  /* Papers as collapsible boxes */
+  details.paper {
+    background: #0d1720;
+    border: 1px solid #1e3040;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    overflow: hidden;
   }
-  .paper-ref     { font-size: 10px; color: #4a7aaa; letter-spacing: 0.05em; margin-bottom: 3px; }
-  .paper-title   { font-size: 12px; color: #c8bfb0; font-style: italic; line-height: 1.4; margin-bottom: 4px; }
-  .paper-finding { font-size: 12px; color: #8a9aaa; line-height: 1.5; }
+  details.paper summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 9px 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    user-select: none;
+  }
+  details.paper summary::-webkit-details-marker { display: none; }
+  details.paper summary::before {
+    content: '▸';
+    font-size: 10px;
+    color: #4a7aaa;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+  }
+  details.paper[open] summary::before { transform: rotate(90deg); }
+  .paper-ref   { font-size: 11px; color: #4a7aaa; letter-spacing: 0.04em; flex-shrink: 0; }
+  .paper-title { font-size: 12px; color: #8a9aaa; font-style: italic; line-height: 1.3; }
+  .paper-finding {
+    font-size: 13px; color: #c0b8a8; line-height: 1.6;
+    padding: 0 12px 12px 28px;
+    border-top: 1px solid #1a2a3a;
+    padding-top: 10px;
+    margin-top: 0;
+  }
 
   /* ── HOVER TOOLTIP ── */
   .tooltip {
@@ -1113,15 +1141,17 @@ function openDetail(id) {
   }
   if (node.gap) {
     html += `<span class="gap-tag">Research Gap</span>
-             <div class="who-text" style="margin-top:6px;font-style:italic;color:#7a8a9a;font-size:12px">${node.gap}</div>`;
+             <div class="who-text" style="margin-top:6px;font-style:italic;color:#7a8a9a;font-size:14px">${node.gap}</div>`;
   }
   html += `<div class="section-label">Supporting research (${node.papers.length} ${node.papers.length===1?'paper':'papers'})</div>`;
   node.papers.forEach(p => {
-    html += `<div class="paper">
-               <div class="paper-ref">${p.ref}</div>
-               <div class="paper-title">${p.title}</div>
+    html += `<details class="paper">
+               <summary>
+                 <span class="paper-ref">${p.ref}</span>
+                 <span class="paper-title">${p.title}</span>
+               </summary>
                <div class="paper-finding">${p.finding}</div>
-             </div>`;
+             </details>`;
   });
 
   document.getElementById('detailBody').innerHTML = html;
