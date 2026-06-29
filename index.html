@@ -342,6 +342,42 @@
     transition: background 0.15s;
   }
   .controls button:hover { background: #253545; }
+
+  /* ── QUADRANT FILTER BAR ── */
+  .filter-bar {
+    flex-shrink: 0;
+    background: #0d1720;
+    border-bottom: 1px solid #1e3040;
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .filter-bar-label {
+    font-size: 10px;
+    color: #3a5a7a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+  .qbtn {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    border: 1px solid #1e3a50;
+    background: #111e2a;
+    color: #5a8aaa;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .qbtn:hover { background: #1a2e40; color: #8ab0d0; border-color: #2a5070; }
+  .qbtn.active { background: #1a3a55; color: #c0e0f8; border-color: #4a8ab0; }
+  .qbtn.all    { color: #6a7a8a; border-color: #2a3a4a; }
+  .qbtn.all.active { background: #1a2a38; color: #a0b8c8; border-color: #3a5a7a; }
 </style>
 </head>
 <body>
@@ -350,6 +386,20 @@
   <h1>AI Impact Matrix — The Human Brain in the Age of Generative AI</h1>
   <span>Mark Turner &nbsp;·&nbsp; Drag to rotate &nbsp;·&nbsp; Hover a sphere for key message &nbsp;·&nbsp; Click for full research</span>
 </header>
+
+<!-- ── QUADRANT FILTER BAR ── -->
+<div class="filter-bar" id="filterBar">
+  <span class="filter-bar-label">Quadrant</span>
+  <button class="qbtn all active" id="qbtn-all" onclick="setQuadrant(null)">All</button>
+  <button class="qbtn" onclick="setQuadrant('-1,1,1')">Intellectual · Added · Typical</button>
+  <button class="qbtn" onclick="setQuadrant('-1,-1,1')">Intellectual · Reduced · Typical</button>
+  <button class="qbtn" onclick="setQuadrant('1,1,1')">Emotional · Added · Typical</button>
+  <button class="qbtn" onclick="setQuadrant('1,-1,1')">Emotional · Reduced · Typical</button>
+  <button class="qbtn" onclick="setQuadrant('-1,1,-1')">Intellectual · Added · Divergent</button>
+  <button class="qbtn" onclick="setQuadrant('-1,-1,-1')">Intellectual · Reduced · Divergent</button>
+  <button class="qbtn" onclick="setQuadrant('1,1,-1')">Emotional · Added · Divergent</button>
+  <button class="qbtn" onclick="setQuadrant('1,-1,-1')">Emotional · Reduced · Divergent</button>
+</div>
 
 <div class="stage">
 
@@ -387,6 +437,8 @@
         <strong>Warm spheres — Children</strong>
         At risk of <em>never forming</em> a capability in the first place. Non-formation during developmental windows may be permanent in ways adult atrophy is not.
       </div>
+
+      <button onclick="clearMatrix()" style="margin-top:24px;width:100%;padding:10px;background:none;border:1px solid #2a3a4a;color:#4a6a8a;font-size:13px;font-family:Georgia,serif;letter-spacing:0.05em;border-radius:4px;cursor:pointer;transition:background 0.15s,color 0.15s" onmouseover="this.style.background='#1a2a3a';this.style.color='#8ab0d0'" onmouseout="this.style.background='none';this.style.color='#4a6a8a'">Clear — reset to blank canvas</button>
     </div>
   </div>
 
@@ -743,7 +795,7 @@ function project(x, y, z) {
   const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
   const x1 = x*cosY - z*sinY, z1 = x*sinY + z*cosY;
   const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
-  const y1 = y*cosX - z1*sinX, z2 = y*sinX + z1*cosX;
+  const y1 = (-y)*cosX - z1*sinX, z2 = (-y)*sinX + z1*cosX;
   const fov = 600*scale;
   const dist = fov/(fov + z2*120);
   return { sx: cx + x1*80*scale*dist, sy: cy + y1*80*scale*dist, dist: z2, depth: dist };
@@ -863,6 +915,7 @@ function draw() {
   sorted.forEach(({n}) => {
     const alpha = n.pop === 'adult' ? adultAlpha : childAlpha;
     if (alpha <= 0) return;
+    if (activeQuadrant !== null && n.pos.join(',') !== activeQuadrant) return;
     const ht = drawSphere(n, selectedNode===n.id, hoverNode===n.id, alpha);
     hitTargets.push({id:n.id,...ht});
   });
@@ -941,6 +994,22 @@ function getOp() {
   return BUILD_OPACITY.__live || BUILD_OPACITY[buildState];
 }
 
+// ── QUADRANT FILTER ────────────────────────────────────────────────────────────
+let activeQuadrant = null; // null = show all; string like "-1,1,1" = filter to that pos
+
+function setQuadrant(key) {
+  activeQuadrant = key;
+  document.querySelectorAll('.qbtn').forEach(b => b.classList.remove('active'));
+  if (key === null) {
+    document.getElementById('qbtn-all').classList.add('active');
+  } else {
+    document.querySelectorAll('.qbtn').forEach(b => {
+      if (b.getAttribute('onclick') === `setQuadrant('${key}')`) b.classList.add('active');
+    });
+  }
+  draw();
+}
+
 function buildStep(step) {
   if (step <= buildState) return; // already done
   animFrom = buildState;
@@ -967,6 +1036,15 @@ function updateBladeBuildUI() {
   // Step hint
   const hint = document.getElementById('stepHint');
   hint.textContent = STEP_HINTS[Math.min(buildState, STEP_HINTS.length-1)];
+}
+
+function clearMatrix() {
+  animFrom = buildState; animTo = 0; buildState = 0;
+  animStart = performance.now();
+  selectedNode = null;
+  closeRight();
+  updateBladeBuildUI();
+  requestAnimationFrame(animateBuild);
 }
 
 function closeLeft() {
