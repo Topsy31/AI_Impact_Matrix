@@ -934,8 +934,10 @@
     <div class="graph-legend-row"><div class="gl-circle" style="background:#7040c0;width:18px;height:18px"></div>Sphere — Value Reduced</div>
     <div class="graph-legend-row"><div class="gl-circle" style="background:#4ab0c0;width:18px;height:18px"></div>Sphere — Complex</div>
     <div class="graph-legend-row"><div class="gl-circle" style="background:#e8e0d5;width:10px;height:10px"></div>Research Paper</div>
+    <div class="graph-legend-row"><svg width="16" height="16" style="flex-shrink:0"><polygon points="8,1 15,8 8,15 1,8" fill="#2a1e0a" stroke="#c8902a" stroke-width="1.5"/></svg>Foundational Book</div>
     <div class="graph-legend-row"><div class="gl-line" style="background:#4a7aaa;height:2px"></div>Sphere → Paper</div>
     <div class="graph-legend-row"><div class="gl-line gl-dashed"></div>Paper cites Paper</div>
+    <div class="graph-legend-row"><div class="gl-line" style="background:repeating-linear-gradient(90deg,#c8902a 0,#c8902a 6px,transparent 6px,transparent 9px);height:1px"></div>Paper cites Book</div>
   </div>
 </div>
 
@@ -1697,6 +1699,46 @@ function switchView(v) {
 // ── RESEARCH GRAPH ────────────────────────────────────────────────────────────
 let graphInitialised = false;
 
+// ── Books — foundational texts cited by papers in the matrix ─────────────────
+const BOOKS = [
+  {
+    ref: 'Turkle (2011)',
+    title: 'Alone Together: Why We Expect More from Technology and Less from Each Other',
+    author: 'Sherry Turkle',
+    year: 2011,
+    publisher: 'Basic Books',
+    summary: 'MIT sociologist\'s landmark study of how digital technology reshapes human relationships. Central thesis: people are settling for the "illusion of companionship without the demands of friendship." Identified four pressure points — shallower conversations, connection on one\'s own terms, curated identity, and companionship outsourced to machines. Conceptual origin of the synthetic attachment literature.',
+    citedBy: ['Lipin (2025)', 'Bunim (2024)', 'Skjuve et al. (2022)']
+  },
+  {
+    ref: 'Bowlby (1969)',
+    title: 'Attachment and Loss, Vol. 1: Attachment',
+    author: 'John Bowlby',
+    year: 1969,
+    publisher: 'Basic Books',
+    summary: 'Foundational work establishing attachment theory. Describes attachment as an innate behavioural system with biological function of protection; individuals develop "internal working models" of attachment from early caregiver relationships that persist into adult life. The theoretical basis for why AI relationships during childhood carry categorically higher risk than those formed in adulthood.',
+    citedBy: ['Lipin (2025)', 'Bunim (2024)', 'Internet Matters (2024)']
+  },
+  {
+    ref: 'Horton & Wohl (1956)',
+    title: 'Mass Communication and Para-Social Interaction: Observations on Intimacy at a Distance',
+    author: 'Donald Horton & Richard Wohl',
+    year: 1956,
+    publisher: 'Psychiatry, 19(3)',
+    summary: 'Coined the term "parasocial relationship" — the one-sided emotional bond audiences form with media figures who cannot genuinely reciprocate. Identified that parasocial relationships are "particularly favourable to the formation of compensatory attachments by the socially isolated, the socially inept, the aged and invalid, the timid and rejected." First articulated the mechanism that underpins all AI companion research.',
+    citedBy: ['Bunim (2024)', 'Lipin (2025)', 'Skjuve et al. (2022)']
+  },
+  {
+    ref: 'Mark (2023)',
+    title: 'Attention Span: A Groundbreaking Way to Restore Balance, Happiness and Productivity',
+    author: 'Gloria Mark',
+    year: 2023,
+    publisher: 'HarperOne',
+    summary: 'The book-length synthesis of Mark\'s two decades of workplace attention research. Documents the decline of sustained attention from 2.5 minutes (2003) to 47 seconds (2020), explores physiological stress correlates of fragmented attention, and argues for deliberate "depth of processing" as a cognitive necessity. The Mark (2026) SXSW talk that appears in the matrix drew directly from this work.',
+    citedBy: ['Mark (2026)', 'Yang et al. (2026)', 'Žnidarič et al. (2026)']
+  }
+];
+
 function initGraph() {
   if (graphInitialised) return;
   graphInitialised = true;
@@ -1725,7 +1767,22 @@ function initGraph() {
   });
   const paperNodes = Object.values(paperMap);
 
-  const nodes = [...sphereNodes, ...paperNodes];
+  // Book nodes — foundational texts, visually distinct
+  const bookNodes = BOOKS.map(b => ({
+    id: 'book-' + b.ref,
+    kind: 'book',
+    ref: b.ref,
+    title: b.title,
+    author: b.author,
+    year: b.year,
+    publisher: b.publisher,
+    summary: b.summary,
+    citedBy: b.citedBy
+  }));
+  const bookMap = {};
+  bookNodes.forEach(b => { bookMap[b.ref] = b; });
+
+  const nodes = [...sphereNodes, ...paperNodes, ...bookNodes];
 
   // ── Build edge list ──────────────────────────────────────────────────────
   const links = [];
@@ -1800,6 +1857,16 @@ function initGraph() {
     if (!linkSet.has(key)) { linkSet.add(key); cleanLinks.push({ source: s.id, target: t.id, type: 'citation' }); }
   });
 
+  // Book → paper citation edges (papers that cite these foundational books)
+  bookNodes.forEach(b => {
+    b.citedBy.forEach(paperRef => {
+      const p = paperMap[paperRef];
+      if (!p) return;
+      const key = p.id + '|' + b.id;
+      if (!linkSet.has(key)) { linkSet.add(key); cleanLinks.push({ source: p.id, target: b.id, type: 'book-citation' }); }
+    });
+  });
+
   // ── D3 Setup ─────────────────────────────────────────────────────────────
   const svg = d3.select('#graphSvg');
   const panel = document.getElementById('graphPanel');
@@ -1814,29 +1881,32 @@ function initGraph() {
 
   // Arrow markers
   svg.append('defs').selectAll('marker')
-    .data(['primary','citation'])
+    .data(['primary','citation','book-citation'])
     .join('marker')
     .attr('id', d => 'arrow-' + d)
-    .attr('viewBox', '0 -4 8 8').attr('refX', 18).attr('refY', 0)
+    .attr('viewBox', '0 -4 8 8')
+    .attr('refX', d => d === 'book-citation' ? 22 : 18).attr('refY', 0)
     .attr('markerWidth', 5).attr('markerHeight', 5).attr('orient', 'auto')
     .append('path')
     .attr('d', 'M0,-4L8,0L0,4')
-    .attr('fill', d => d === 'primary' ? '#4a7aaa' : '#5a6a7a');
+    .attr('fill', d => d === 'primary' ? '#4a7aaa' : d === 'book-citation' ? '#c8902a' : '#5a6a7a');
 
   // Simulation
   const sim = d3.forceSimulation(nodes)
-    .force('link', d3.forceLink(cleanLinks).id(d => d.id).distance(d => d.type === 'primary' ? 120 : 90).strength(d => d.type === 'primary' ? 0.6 : 0.3))
-    .force('charge', d3.forceManyBody().strength(d => d.kind === 'sphere' ? -400 : -180))
+    .force('link', d3.forceLink(cleanLinks).id(d => d.id)
+      .distance(d => d.type === 'primary' ? 120 : d.type === 'book-citation' ? 150 : 90)
+      .strength(d => d.type === 'primary' ? 0.6 : d.type === 'book-citation' ? 0.25 : 0.3))
+    .force('charge', d3.forceManyBody().strength(d => d.kind === 'sphere' ? -400 : d.kind === 'book' ? -300 : -180))
     .force('center', d3.forceCenter(W / 2, H / 2))
-    .force('collision', d3.forceCollide().radius(d => d.kind === 'sphere' ? 28 : 18));
+    .force('collision', d3.forceCollide().radius(d => d.kind === 'sphere' ? 28 : d.kind === 'book' ? 24 : 18));
 
   // Links
   const link = g.append('g').selectAll('line')
     .data(cleanLinks).join('line')
-    .attr('stroke', d => d.type === 'primary' ? '#4a7aaa' : '#3a4a5a')
-    .attr('stroke-width', d => d.type === 'primary' ? 1.5 : 1)
-    .attr('stroke-dasharray', d => d.type === 'citation' ? '4,4' : null)
-    .attr('stroke-opacity', d => d.type === 'primary' ? 0.5 : 0.4)
+    .attr('stroke', d => d.type === 'primary' ? '#4a7aaa' : d.type === 'book-citation' ? '#c8902a' : '#3a4a5a')
+    .attr('stroke-width', d => d.type === 'primary' ? 1.5 : d.type === 'book-citation' ? 1.2 : 1)
+    .attr('stroke-dasharray', d => d.type === 'citation' ? '4,4' : d.type === 'book-citation' ? '6,3' : null)
+    .attr('stroke-opacity', d => d.type === 'primary' ? 0.5 : d.type === 'book-citation' ? 0.55 : 0.4)
     .attr('marker-end', d => 'url(#arrow-' + d.type + ')');
 
   // Node colours
@@ -1869,6 +1939,22 @@ function initGraph() {
     .attr('stroke', '#4a7aaa')
     .attr('stroke-width', 1.2);
 
+  // Book nodes — diamond shape
+  node.filter(d => d.kind === 'book')
+    .append('path')
+    .attr('d', 'M0,-16 L14,0 L0,16 L-14,0 Z')
+    .attr('fill', '#2a1e0a')
+    .attr('stroke', '#c8902a')
+    .attr('stroke-width', 2);
+
+  // Book inner mark — italic 'B' in amber
+  node.filter(d => d.kind === 'book')
+    .append('text')
+    .attr('text-anchor', 'middle').attr('dy', '0.4em')
+    .attr('font-size', '11px').attr('font-style', 'italic').attr('font-family', 'Georgia, serif')
+    .attr('fill', '#c8902a').attr('pointer-events', 'none')
+    .text('B');
+
   // Labels
   node.filter(d => d.kind === 'sphere')
     .append('text')
@@ -1880,6 +1966,12 @@ function initGraph() {
     .append('text')
     .attr('x', 13).attr('dy', '0.35em')
     .attr('font-size', '9px').attr('fill', '#8ab0c8').attr('pointer-events', 'none')
+    .text(d => d.ref);
+
+  node.filter(d => d.kind === 'book')
+    .append('text')
+    .attr('x', 17).attr('dy', '0.35em')
+    .attr('font-size', '9px').attr('fill', '#c8902a').attr('font-style', 'italic').attr('pointer-events', 'none')
     .text(d => d.ref);
 
   // Tick
@@ -1916,6 +2008,16 @@ function selectGraphNode(d) {
         <summary><span class="paper-ref">${p.ref}</span><span class="paper-title" style="margin-left:6px">${p.title}</span></summary>
         <div class="paper-finding">${p.finding}</div>
       </details>`;
+    });
+    gdBody.innerHTML = html;
+  } else if (d.kind === 'book') {
+    gdType.textContent  = `Foundational Book — ${d.year}`;
+    gdTitle.textContent = d.title;
+    let html = `<div style="font-size:11px;color:#c8902a;letter-spacing:0.05em;margin-bottom:12px">${d.author} · ${d.publisher}</div>`;
+    html += `<div class="graph-finding" style="margin-bottom:16px">${d.summary}</div>`;
+    html += `<div class="graph-spheres-label">Cited by ${d.citedBy.length} paper${d.citedBy.length===1?'':'s'} in this matrix</div>`;
+    d.citedBy.forEach(ref => {
+      html += `<div style="font-size:11px;color:#8ab0c8;padding:3px 0;border-bottom:1px solid #1e3040">${ref}</div>`;
     });
     gdBody.innerHTML = html;
   } else {
