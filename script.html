@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Invisible Trade — Presenter Script</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: Georgia, serif;
+    background: #0e1620;
+    color: #ddd8d0;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #0a1018;
+    border-bottom: 1px solid #2a3a4a;
+    padding: 14px 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+  header h1 {
+    font-size: 15px;
+    font-weight: normal;
+    color: #c8bfb0;
+    letter-spacing: 0.04em;
+  }
+  .timing-total {
+    font-size: 12px;
+    color: #4a7aaa;
+    font-style: italic;
+  }
+
+  /* ── NAV TABS ── */
+  .nav-bar {
+    position: sticky;
+    top: 49px;
+    z-index: 99;
+    background: #0e1620;
+    border-bottom: 1px solid #1e3040;
+    display: flex;
+    gap: 0;
+    padding: 0 24px;
+    overflow-x: auto;
+  }
+  .nav-btn {
+    font-family: Georgia, serif;
+    font-size: 12px;
+    padding: 10px 20px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: #4a6a8a;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .nav-btn:hover { color: #8ab0d0; }
+  .nav-btn.active { color: #e8e0d5; border-bottom-color: #4a8ab0; }
+
+  /* ── MAIN CONTENT ── */
+  .movements {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+
+  .movement {
+    display: none;
+    animation: fadeIn 0.2s ease;
+  }
+  .movement.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .movement-header {
+    border-left: 4px solid #4a8ab0;
+    padding: 0 0 0 20px;
+    margin-bottom: 36px;
+  }
+  .movement-number {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #4a7aaa;
+    margin-bottom: 6px;
+  }
+  .movement-title {
+    font-size: 26px;
+    color: #e8e0d5;
+    font-weight: normal;
+    line-height: 1.2;
+  }
+  .movement-timing {
+    font-size: 13px;
+    color: #3a6a8a;
+    font-style: italic;
+    margin-top: 6px;
+  }
+
+  /* ── BEATS ── */
+  .beat {
+    margin-bottom: 32px;
+  }
+
+  /* Stage direction — italic, subdued */
+  .stage {
+    display: block;
+    font-size: 13px;
+    font-style: italic;
+    color: #5a8a6a;
+    letter-spacing: 0.03em;
+    margin-bottom: 14px;
+    padding-left: 2px;
+  }
+
+  /* Cue — presenter action prompt */
+  .cue {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4a8ab0;
+    margin: 18px 0 10px;
+    padding-left: 2px;
+  }
+
+  /* Spoken word — the actual script */
+  .spoken {
+    display: block;
+    font-size: 22px;
+    color: #e8e0d5;
+    line-height: 1.75;
+    margin-bottom: 8px;
+    padding: 16px 22px;
+    background: #111c28;
+    border-left: 3px solid #2a5a8a;
+    border-radius: 0 6px 6px 0;
+  }
+  .spoken em {
+    color: #a0d0b8;
+    font-style: italic;
+  }
+  .spoken strong {
+    color: #ffffff;
+  }
+
+  /* Pause / delivery note */
+  .pause {
+    display: block;
+    font-size: 13px;
+    color: #4a6a5a;
+    font-style: italic;
+    margin: 8px 0 16px 4px;
+  }
+
+  /* Key line — sharper emphasis */
+  .key-line {
+    display: block;
+    font-size: 24px;
+    color: #ffffff;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    padding: 18px 22px;
+    background: #1a1820;
+    border-left: 4px solid #8a50c0;
+    border-radius: 0 6px 6px 0;
+  }
+  .key-line strong { color: #e0c0ff; }
+
+  /* Warning / danger note */
+  .warn {
+    display: block;
+    font-size: 22px;
+    color: #e8d0c0;
+    line-height: 1.75;
+    margin-bottom: 8px;
+    padding: 16px 22px;
+    background: #1e1010;
+    border-left: 3px solid #aa4a3a;
+    border-radius: 0 6px 6px 0;
+  }
+  .warn em  { color: #ffb090; font-style: italic; }
+  .warn strong { color: #ffffff; }
+
+  /* Section divider within a movement */
+  .divider {
+    border: none;
+    border-top: 1px solid #1e3040;
+    margin: 32px 0;
+  }
+
+  /* ── NAVIGATION FOOTER ── */
+  .nav-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid #1e3040;
+  }
+  .nav-foot-btn {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    padding: 10px 22px;
+    border: 1px solid #2a4a6a;
+    border-radius: 4px;
+    background: none;
+    color: #6ab0d0;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-foot-btn:hover { background: #1a2e40; color: #a0d0f0; }
+  .nav-foot-btn:disabled { opacity: 0.2; cursor: default; }
+  .nav-foot-btn:disabled:hover { background: none; color: #6ab0d0; }
+
+  .progress-dots {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #1e3040;
+    border: 1px solid #2a4a6a;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .dot.active { background: #4a8ab0; }
+  .dot.done   { background: #2a5a7a; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>The Invisible Trade — Presenter Script</h1>
+  <span class="timing-total">20 minutes · 5 movements</span>
+</header>
+
+<div class="nav-bar">
+  <button class="nav-btn active" onclick="go(0)">1 · The Story</button>
+  <button class="nav-btn"        onclick="go(1)">2 · The Frame</button>
+  <button class="nav-btn"        onclick="go(2)">3 · Sphere 1</button>
+  <button class="nav-btn"        onclick="go(3)">4 · Spheres 2 &amp; 3</button>
+  <button class="nav-btn"        onclick="go(4)">5 · The Evidence</button>
+</div>
+
+<div class="movements">
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- MOVEMENT 1 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="movement active" id="m0">
+    <div class="movement-header">
+      <div class="movement-number">Movement 1 of 5</div>
+      <div class="movement-title">The Comfortable Story</div>
+      <div class="movement-timing">3 minutes &nbsp;·&nbsp; Matrix blank, no spheres</div>
+    </div>
+
+    <div class="beat">
+      <span class="stage">Open with the matrix blank. No spheres visible. Do not explain what the matrix is yet.</span>
+
+      <span class="spoken">"Picture someone you know — probably yourself — sitting with a difficult document to write. An important one. A proposal, a strategy paper, a performance review. You have been staring at it for twenty minutes and it isn't moving. So you open ChatGPT, describe the situation, and it gives you a first draft in thirty seconds. You edit it, improve it, send it. The work is done. The output is good. Everyone is happy."</span>
+
+      <span class="pause">Pause. Let it sit. At least three seconds.</span>
+
+      <span class="spoken">"That story feels completely fine. <strong>That's the problem.</strong>"</span>
+    </div>
+
+    <div class="beat">
+      <span class="cue">Plant the central question — you will return to this at the very end</span>
+
+      <span class="key-line"><em>"What are you paying for what AI gives you?"</em></span>
+
+      <span class="pause">Do not answer it. Move on immediately.</span>
+    </div>
+
+    <div class="nav-footer">
+      <button class="nav-foot-btn" onclick="go(0)" disabled>Back</button>
+      <div class="progress-dots" id="dots"></div>
+      <button class="nav-foot-btn" onclick="go(1)">Next: The Frame &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- MOVEMENT 2 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="movement" id="m1">
+    <div class="movement-header">
+      <div class="movement-number">Movement 2 of 5</div>
+      <div class="movement-title">Building the Frame</div>
+      <div class="movement-timing">7 minutes &nbsp;·&nbsp; Build the matrix live using the left blade</div>
+    </div>
+
+    <div class="beat">
+      <span class="cue">&rarr; Click Value axis in the left blade</span>
+      <span class="spoken">"The first question the matrix asks is not 'did AI help you?' It asks: <em>did you retain anything?</em> Not the output — the output is obvious. Did the human who used the tool come away more capable, or less?"</span>
+      <span class="pause">Pause. Let that distinction settle.</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="beat">
+      <span class="cue">&rarr; Click Engagement axis</span>
+      <span class="spoken">"The second question is about what kind of human activity was involved. Intellectual engagement — reasoning, evaluating, constructing an argument — or emotional engagement — connection, identity, the sense of being understood. These are not equivalent. AI interacts with them differently."</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="beat">
+      <span class="cue">&rarr; Click Neurology axis</span>
+      <span class="spoken">"The third question is whose brain we're talking about. A brain that is fully formed, or one that is still forming. And — this is the part the mainstream AI debate almost entirely ignores — a neurotypical brain, or a neurodivergent one."</span>
+
+      <span class="spoken">"For people with ADHD, autism, or dyslexia, AI can be a genuine equaliser. Not a workaround — a structural equaliser. The real-time task structuring, the communication scaffolding, the removal of friction between how someone actually thinks and how the neurotypically-designed workplace expects them to present. Neurodiverse workers in recent studies report significantly higher satisfaction with AI tools than neurotypical respondents. That matters, and it belongs in this picture."</span>
+
+      <span class="warn">"But the same axis cuts the other way. One study found that the phrase 'I have autism' scored more negatively in AI language model associations than 'I am a bank robber.' The tool that is helping someone may simultaneously be encoding stigma about them. That tension is real, unresolved, and worth naming."</span>
+
+      <span class="pause">Deliver the neurodivergent aside directly, not apologetically. State the benefit before the risk.</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="beat">
+      <span class="cue">&rarr; Click Adult spheres, then Child spheres</span>
+      <span class="spoken">"We now have eight zones. Eight different answers to the question of what AI is doing to human capability. Let's find where you are."</span>
+    </div>
+
+    <div class="nav-footer">
+      <button class="nav-foot-btn" onclick="go(0)">&larr; Back</button>
+      <div class="progress-dots" id="dots1"></div>
+      <button class="nav-foot-btn" onclick="go(2)">Next: Sphere 1 &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- MOVEMENT 3 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="movement" id="m2">
+    <div class="movement-header">
+      <div class="movement-number">Movement 3 of 5 &nbsp;·&nbsp; Part A</div>
+      <div class="movement-title">Sphere 1 — The Aspirational Cell</div>
+      <div class="movement-timing">Intellectual · Value Added · Neurotypical (Adult)</div>
+    </div>
+
+    <div class="beat">
+      <span class="stage">Click the blue sphere at Intellectual · Added · Typical. The right blade opens. Read the headline to the room.</span>
+
+      <span class="spoken">"This is the aspirational cell. This is where you believe you are when you open ChatGPT. Hint-seeking. Augmenting your thinking, not replacing it. Twenty-seven percent of users in one study stayed here. They showed no meaningful cognitive degradation. The question is — are you one of them?"</span>
+
+      <span class="key-line"><em>"And how would you know?"</em></span>
+
+      <span class="pause">Plant the seed. Do not answer it. Move on immediately.</span>
+    </div>
+
+    <div class="nav-footer">
+      <button class="nav-foot-btn" onclick="go(1)">&larr; Back</button>
+      <div class="progress-dots" id="dots2"></div>
+      <button class="nav-foot-btn" onclick="go(3)">Next: Spheres 2 &amp; 3 &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- MOVEMENT 4 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="movement" id="m3">
+    <div class="movement-header">
+      <div class="movement-number">Movement 3 of 5 &nbsp;·&nbsp; Parts B &amp; C</div>
+      <div class="movement-title">The Invisible Trap &amp; The Irreversible Harm</div>
+      <div class="movement-timing">8 minutes total across both spheres</div>
+    </div>
+
+    <div class="beat">
+      <span class="stage">Sphere 2 — Intellectual · Value Reduced · Neurotypical (Adult). Click the purple sphere.</span>
+
+      <span class="warn">"This is the most dangerous cell in the matrix. Not because the harm is severe — but because it is invisible. The professional in this cell produces output that still looks good. Their colleagues cannot see the problem. Their manager cannot see it. <em>They</em> cannot see it. The skill is eroding quietly, below the level of awareness, and the only moment the loss becomes visible is when the AI is taken away."</span>
+    </div>
+
+    <div class="beat">
+      <span class="cue">Tell Gloria Mark's finding as a story — not a citation. No need to say "a study found."</span>
+
+      <span class="spoken">"Gloria Mark has been studying human attention since 2003. In her lab studies, the average time a person could hold focus on a single task was two and a half minutes. By 2020 it was forty-seven seconds. She said cognitive abilities atrophy through disuse — exactly like a muscle. And people with weakened critical thinking become more susceptible to misinformation."</span>
+
+      <span class="spoken">"She was talking about smartphones. Imagine the same mechanism, but faster, more targeted, and designed to feel helpful."</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="beat">
+      <span class="stage">Sphere 3 — Intellectual · Value Reduced · Neurotypical (Child). Click the red sphere.</span>
+
+      <span class="spoken">"Now I want you to consider a child. Not a professional who is losing a skill they once had. A child who is <em>never forming it</em> in the first place."</span>
+
+      <span class="spoken">"A cohort study tracked five hundred children from infancy. It found that the children with the highest screen exposure at age one — not age ten, <em>age one</em> — showed the largest academic effects years later. The mechanism was not the screens themselves. It was what the screens displaced. Every hour in front of a screen was an hour not spent in effortful, reciprocal interaction with a caregiver. That interaction is how cognitive architecture gets built. Remove it, and the architecture doesn't form."</span>
+    </div>
+
+    <div class="beat">
+      <span class="cue">The sharpest line in the presentation. Slow down. Deliver it clearly.</span>
+
+      <span class="key-line">"An adult who stops practising loses a skill they once had. A child who never practises never builds it. <strong>Those are not the same problem.</strong> Non-formation may be permanent in ways that adult atrophy is not."</span>
+
+      <span class="pause">Let the silence hold. Do not fill it. At least five seconds.</span>
+    </div>
+
+    <div class="nav-footer">
+      <button class="nav-foot-btn" onclick="go(2)">&larr; Back</button>
+      <div class="progress-dots" id="dots3"></div>
+      <button class="nav-foot-btn" onclick="go(4)">Next: The Evidence &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- MOVEMENT 5 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="movement" id="m4">
+    <div class="movement-header">
+      <div class="movement-number">Movement 4 &amp; 5 of 5</div>
+      <div class="movement-title">The Evidence &amp; The Return</div>
+      <div class="movement-timing">2 minutes &nbsp;·&nbsp; No new data. No new slides.</div>
+    </div>
+
+    <div class="beat">
+      <span class="stage">Switch to Research Graph view. Let the audience absorb it before speaking. Ten seconds minimum.</span>
+
+      <span class="spoken">"Everything I've described is grounded in peer-reviewed research. This is the network of papers underpinning the matrix — each sphere connected to the studies that support it, and those studies connected to each other through citation. The papers at the centre of that network are the ones that bear the most evidential weight."</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="beat">
+      <span class="cue">Return to the matrix view. Return to the opening story. Close with the question you planted at the start.</span>
+
+      <span class="spoken">"Back to that document. The proposal, the strategy paper, the performance review. The output was good. Everyone was happy. Here is the question I want to leave you with — and I'm not going to answer it for you, because I don't think there's a single answer:"</span>
+
+      <span class="key-line"><em>"What did you pay for that thirty seconds?"</em></span>
+
+      <span class="spoken">"Not in money. In capability. In the neural pathways that would have fired if you had struggled with it for another twenty minutes. In the self-knowledge you would have gained about how you actually think about that problem. In the thing you would have noticed, halfway through writing it yourself, that you couldn't have predicted you'd notice."</span>
+
+      <span class="spoken">"I'm not arguing you should stop using AI. I use it every day. I wrote a book teaching people how. What I'm arguing is that we are making this trade constantly, automatically, without awareness — and we are making it for our children before they can consent to it."</span>
+
+      <span class="spoken">"The matrix doesn't tell you what to do. It just shows you the territory. Tonight I'd like to hear where you think you are in it — and whether you've ever asked yourself that question before."</span>
+
+      <span class="pause">End on the question. The conversation that follows is the point.</span>
+    </div>
+
+    <div class="nav-footer">
+      <button class="nav-foot-btn" onclick="go(3)">&larr; Back</button>
+      <div class="progress-dots" id="dots4"></div>
+      <button class="nav-foot-btn" onclick="go(0)">Start again</button>
+    </div>
+  </div>
+
+</div><!-- .movements -->
+
+<script>
+  const TOTAL = 5;
+  let current = 0;
+  const labels = ['1 · The Story','2 · The Frame','3 · Sphere 1','4 · Spheres 2 & 3','5 · The Evidence'];
+
+  function go(n) {
+    document.getElementById('m' + current).classList.remove('active');
+    document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', i===n));
+    current = n;
+    document.getElementById('m' + current).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    renderDots();
+  }
+
+  function renderDots() {
+    for (let i = 0; i < TOTAL; i++) {
+      const container = document.getElementById('dots' + i);
+      if (!container) continue;
+      container.innerHTML = '';
+      for (let j = 0; j < TOTAL; j++) {
+        const d = document.createElement('div');
+        d.className = 'dot' + (j === current ? ' active' : j < current ? ' done' : '');
+        d.title = labels[j];
+        d.addEventListener('click', () => go(j));
+        container.appendChild(d);
+      }
+    }
+    // also render the first movement's dots (id="dots" not "dots0")
+    const d0 = document.getElementById('dots');
+    if (d0) {
+      d0.innerHTML = '';
+      for (let j = 0; j < TOTAL; j++) {
+        const d = document.createElement('div');
+        d.className = 'dot' + (j === current ? ' active' : j < current ? ' done' : '');
+        d.title = labels[j];
+        d.addEventListener('click', () => go(j));
+        d0.appendChild(d);
+      }
+    }
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && current < TOTAL - 1) go(current + 1);
+    if (e.key === 'ArrowLeft'  && current > 0)         go(current - 1);
+  });
+
+  renderDots();
+</script>
+</body>
+</html>
