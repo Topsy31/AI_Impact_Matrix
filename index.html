@@ -673,6 +673,13 @@
   .nonformation-label { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--child-text); margin-bottom: 6px; }
   .nonformation-text { font-size: 14px; color: var(--text-dim); line-height: 1.7; font-style: italic; }
 
+  .sex-box {
+    background: #0e1a20; border-left: 3px solid #3a7a6a;
+    padding: 10px 12px; margin-top: 10px; border-radius: 0 4px 4px 0;
+  }
+  .sex-label { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #5aaa8a; margin-bottom: 6px; }
+  .sex-text { font-size: 14px; color: var(--text-dim); line-height: 1.7; font-style: italic; }
+
   .gap-tag {
     display: inline-block; background: var(--gap-bg); color: var(--gap-fg);
     border: 1px solid var(--gap-bdr); border-radius: 3px; font-size: 10px;
@@ -1254,6 +1261,7 @@ const NODES = [
     who:'The professional who believes they are engaging intellectually but is outsourcing cognition without realising it. Performance appears maintained; the underlying capability is eroding silently.',
     insight:'The most dangerous cell in the matrix. Decay operates entirely outside the performer\'s awareness. The person cannot self-diagnose because their output still looks good.',
     insightType:'warning',
+    sex:'Female educational attainment has overtaken male in most OECD countries, and the Gerlich study found higher educational attainment buffers against AI-driven cognitive atrophy. This suggests women may, on average, enter this cell with greater protection than men. Separately, women report more caution about AI accuracy than men in adoption surveys — a behaviour that, if it translates into more critical engagement with outputs, may itself be protective. Neither effect is large enough to be reassuring at the individual level, but both are relevant moderators in population-level analysis.',
     papers:[
       { ref:'Macnamara et al. (2024)', title:'Does AI Assistance Accelerate Skill Decay?', finding:'The aviation pilot retained procedures but lost situational awareness — the higher-order skills most essential when automation fails.' },
       { ref:'Kosmyna et al. (2025)', title:'Your Brain on ChatGPT — Accumulation of Cognitive Debt', finding:'47% lower neural connectivity in ChatGPT users vs no-tool controls. Reduced recall and reduced sense of ownership over their own output.' },
@@ -1330,6 +1338,7 @@ const NODES = [
     who:'The parasocial trap. Emotional engagement with AI that displaces human connection, erodes social capacity, and produces synthetic attachment — particularly in those who are isolated or socially anxious.',
     insight:'The most heavily researched cell in the emotional quadrant. Research is almost uniformly negative. Synthetic attachment, identity fusion, and displacement of human relationship-building are well-evidenced harms.',
     insightType:'warning',
+    sex:'The parasocial attachment literature documents a consistent sex asymmetry in how this cell is entered and experienced. Male users are more likely to develop romantic or dependent attachments to AI companions, with relationship displacement as the primary harm pattern. Female users more commonly report using AI for emotional processing and self-reflection — a pattern that may provide genuine short-term benefit while carrying the same long-term displacement risk through a different mechanism. Neither pattern is safe; they are simply differently dangerous. The Lipin SARRS framework does not disaggregate by sex, and this asymmetry is not yet formally studied in the AI companion literature — but it is consistent with the wider parasocial relationship research from which AI companion theory derives.',
     papers:[
       { ref:'Bunim (2024)', title:'Parasocial Dependency Associated with AI Chatbots', finding:'11 of 19 participants listed AI among their friends. AI provides "friendship-like benefits without potential rejection." COVID-19 isolation correlated with habits that persisted post-pandemic.' },
       { ref:'Lipin (2025)', title:'Synthetic Attachment — SARRS Framework', finding:'Five dimensions: Emotional Substitution, Perceived Reciprocity, Functional Displacement, Persistent Attachment, Identity Fusion. Long-term reliance on non-reciprocal systems may interfere with natural attachment processes.' },
@@ -1362,6 +1371,7 @@ const NODES = [
     who:'An ADHD or autistic person using AI as a genuine executive function scaffold — task structuring, workload management, communication formatting — that reduces the gap between cognitive capacity and neurotypical workplace expectations.',
     insight:'The strongest opportunity case across all cells. AI\'s ability to personalise in real-time is uniquely suited to neurodivergent cognitive profiles in ways that static accommodations cannot match.',
     insightType:'add',
+    sex:'ADHD and autism are significantly under-diagnosed in women and girls. Diagnostic criteria were developed primarily on male populations, and female presentations of both conditions typically involve more effective social masking — meaning many women in this cell do not know they are in it. They are neurodivergent, would benefit from the scaffolding this cell describes, but are receiving no targeted support and may not be seeking it. The benefit of AI as a structural equaliser is therefore asymmetrically available: men with a diagnosis can access it deliberately; women without one may stumble into it by accident, or not at all.',
     papers:[
       { ref:'Knobel (2026)', title:'Algorithmic Risk and Neuroinclusion', finding:'AI-powered reminders, task prioritisation, workload visualisation for ADHD; meeting summaries and clear task structuring for autistic workers. Same capabilities that generate risk, under different design principles, create genuine support.' },
       { ref:'Xu et al. (2025)', title:'Scoping Review — Inclusive and Adaptive Human-AI Interaction', finding:'Adaptive AI (real-time personalisation) is AI\'s unique contribution over static accommodations. 117 papers confirm genuine support in education, healthcare, rehabilitation, and workplace contexts.' },
@@ -1395,6 +1405,7 @@ const NODES = [
     who:'A neurodivergent professional whose natural work patterns are misread by algorithmic management systems as non-compliance or underperformance — with consequences for employment, promotion, and wellbeing.',
     insight:'Harm at the structural level. Not decay through disuse, but active misclassification by systems calibrated to neurotypical baselines. No individual intent is required for this harm to occur.',
     insightType:'warning',
+    sex:'A neurodivergent woman in this cell faces compounded misclassification from two independent sources of encoded bias. Caliskan et al. (2017) documents that language models encode gender bias derived from training data; Brandsen et al. (2024) documents that the same mechanism encodes neurodivergent stigma. A woman whose autistic or ADHD communication patterns are assessed by an algorithmic management system is subject to both simultaneously — flagged as deviating from neurotypical norms and from gender-typical presentation at once. These two biases are not additive in a simple sense; they interact in ways that no current research has examined. The harm is structural and invisible, requiring no individual intent from any system designer.',
     papers:[
       { ref:'Knobel (2026)', title:'Algorithmic Risk and Neuroinclusion', finding:'ADHD hyperfocus misread as inconsistency. Autistic communication patterns flagged as deviation. Algorithmic opacity generates anxiety and hypervigilance — recognised psychosocial hazards under ISO 45003:2021.' },
       { ref:'Brandsen et al. (2024)', title:'Bias Against Neurodivergence in AI Language Models', finding:'"I have autism" scored more negatively than "I am a bank robber" in sentence association tests. The tools themselves carry encoded stigma.' },
@@ -1457,6 +1468,7 @@ const NODES = [
     who:'A neurodivergent person who forms a synthetic attachment that interferes with human relationship development — while relating to an AI system that contains encoded negative bias about their own neurotype.',
     insight:'A specific compounded harm: emotional engagement by a vulnerable user with a system that carries encoded stigma about that user\'s own neurotype. Invisible in research that studies these dimensions separately.',
     insightType:'warning',
+    sex:'This is the strongest intersectional case in the matrix. A neurodivergent woman forming emotional attachment to an AI system is subject to three simultaneous layers of encoded bias: gender bias in language model associations (Caliskan et al., 2017), neurodivergent stigma in the same models (Brandsen et al., 2024), and the under-diagnosis pattern that means she may not have the self-knowledge to recognise the specific vulnerabilities of her position. She is most likely to be in this cell, least likely to know it, and relating to a system that carries negative associations about both her neurotype and her sex. No research examines this intersection. It is named here as a substantiated risk compound, not a finding.',
     gap:'Research gap: The intersection of neurodivergent emotional engagement and embedded model bias is not yet studied as a combined risk.',
     papers:[
       { ref:'Lipin (2025)', title:'Synthetic Attachment — SARRS Framework', finding:'Profiles with social processing differences may score higher on vulnerability dimensions, increasing risk of persistent attachment and identity fusion.' },
@@ -1906,6 +1918,12 @@ function openDetail(id) {
     html += `<div class="nonformation-box">
                <div class="nonformation-label">${isChild?'Non-formation dimension':'Adult vs child contrast'}</div>
                <div class="nonformation-text">${node.nonformation}</div>
+             </div>`;
+  }
+  if (node.sex) {
+    html += `<div class="sex-box">
+               <div class="sex-label">Sex differentiation</div>
+               <div class="sex-text">${node.sex}</div>
              </div>`;
   }
   if (node.gap) {
