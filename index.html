@@ -771,25 +771,32 @@
   }
   .controls button:hover { background: var(--bg-blade-bot); }
 
-  /* ── QR CODE ── */
-  .qr-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #ffffff;
-    padding: 6px;
-    border-radius: 4px;
+  /* ── QR CODE (landing) ── */
+  .landing-qr {
+    margin-top: 48px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    pointer-events: none;
-    z-index: 5;
-    opacity: 0.88;
+    gap: 14px;
   }
-  .qr-badge img { display: block; width: 120px; height: 120px; }
-  .qr-badge span { display: block; font-family: sans-serif; font-size: 9px; color: #555; letter-spacing: 0.04em; }
-  .qr-badge .qr-url { font-size: 7.5px; color: #777; word-break: break-all; margin-top: 2px; }
+  .landing-qr img {
+    display: block;
+    width: 180px;
+    height: 180px;
+    border-radius: 6px;
+  }
+  .landing-qr-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .landing-qr-url {
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    color: var(--accent-hi);
+    letter-spacing: 0.04em;
+  }
 
   /* ── QUADRANT FILTER BAR ── */
   .filter-bar {
@@ -826,9 +833,115 @@
   .qbtn.active { background: var(--accent-tab-bg); color: var(--text); border-color: var(--accent); }
   .qbtn.all    { color: var(--text-dim); border-color: var(--border); }
   .qbtn.all.active { background: var(--bg-card); color: var(--text-muted); border-color: var(--border-accent); }
+
+  /* ── LANDING SCREEN ── */
+  #landing {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  #landing.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .landing-inner {
+    text-align: center;
+    max-width: 680px;
+    padding: 40px 32px;
+  }
+  .landing-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .landing-title {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: normal;
+    color: var(--text);
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    margin-bottom: 32px;
+  }
+  .landing-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--border-accent);
+    margin: 0 auto 32px;
+  }
+  .landing-author {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+  .landing-email {
+    font-size: 14px;
+    color: var(--text-faint);
+    font-style: italic;
+    margin-bottom: 56px;
+    letter-spacing: 0.03em;
+  }
+  .landing-btn {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 14px 48px;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--accent-tab);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .landing-btn:hover {
+    background: var(--accent-tab-bg);
+    color: var(--accent-hi);
+    border-color: var(--accent-hi);
+  }
+  .landing-theme {
+    position: absolute;
+    bottom: 28px;
+    right: 28px;
+    display: flex;
+    gap: 6px;
+  }
 </style>
 </head>
 <body>
+
+<!-- ── LANDING SCREEN ── -->
+<div id="landing">
+  <div class="landing-inner">
+    <div class="landing-eyebrow">AI Impact Matrix</div>
+    <h1 class="landing-title">The Human Brain in the Age of Generative AI</h1>
+    <div class="landing-divider"></div>
+    <div class="landing-author">Mark C. Turner</div>
+    <div class="landing-email">mark@emsity.com</div>
+    <button class="landing-btn" onclick="enterMatrix()">Begin</button>
+
+    <div class="landing-qr">
+      <span class="landing-qr-label">Scan to view on your device</span>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=360x360&margin=8&data=https%3A%2F%2Ftopsy31.github.io%2FAI_Impact_Matrix%2F" alt="QR code — topsy31.github.io/AI_Impact_Matrix">
+      <span class="landing-qr-url">topsy31.github.io/AI_Impact_Matrix</span>
+    </div>
+  </div>
+  <div class="landing-theme">
+    <button class="theme-btn active" id="landingDark"  onclick="applyTheme('dark')">Dark</button>
+    <button class="theme-btn"        id="landingLight" onclick="applyTheme('light')">Light</button>
+    <button class="theme-btn"        id="landingFunky" onclick="applyTheme('funky')">Funky</button>
+  </div>
+</div>
 
 <header>
   <h1>AI Impact Matrix — The Human Brain in the Age of Generative AI</h1>
@@ -920,11 +1033,6 @@
       <div class="legend-row"><div class="legend-sph" style="background:#d4a020"></div>Complex</div>
     </div>
 
-    <div class="qr-badge">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&margin=4&data=https%3A%2F%2Ftopsy31.github.io%2FAI_Impact_Matrix%2F" alt="QR code">
-      <span>Scan to view</span>
-      <span class="qr-url">topsy31.github.io/AI_Impact_Matrix</span>
-    </div>
 
     <div class="hint">Drag to rotate · Scroll to zoom</div>
 
@@ -1476,9 +1584,24 @@ function applyTheme(t) {
   AXES[3].col = ct.axis.valueRed;
   AXES[4].col = ct.axis.neuro;
   AXES[5].col = ct.axis.neuro;
-  ['themeDark','themeLight','themeFunky'].forEach(id => document.getElementById(id).classList.remove('active'));
-  document.getElementById('theme' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('active');
+  const cap = t.charAt(0).toUpperCase() + t.slice(1);
+  ['themeDark','themeLight','themeFunky'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  ['landingDark','landingLight','landingFunky'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  const hdr = document.getElementById('theme' + cap);
+  if (hdr) hdr.classList.add('active');
+  const lnd = document.getElementById('landing' + cap);
+  if (lnd) lnd.classList.add('active');
   draw();
+}
+
+function enterMatrix() {
+  document.getElementById('landing').classList.add('hidden');
 }
 
 function resize() {
